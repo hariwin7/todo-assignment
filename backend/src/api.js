@@ -4,7 +4,7 @@ const database = require("./database");
 
 const app = express();
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 20;
 
 function requestLogger(req, res, next) {
   res.once("finish", () => {
@@ -65,6 +65,7 @@ app.get("/:skipItems/:dueDate?", async (req, res) => {
     res.status(200);
     res.json({ data, pagination });
   } catch (err) {
+    res.status(400).send({ message: err });
     console.log("getApi Error:", err);
   }
 });
@@ -180,6 +181,13 @@ app.put("/:id", async (req, res) => {
 app.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
+
+    if (!id) {
+      res.status(400);
+      res.json({ message: "id is required" });
+      return;
+    }
+
     await database.client.db("todos").collection("todos").deleteOne({ id });
     res.status(203);
     res.end();

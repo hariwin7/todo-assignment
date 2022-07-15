@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import makeStyles from "@mui/styles/makeStyles";
-import { Paper, Box } from "@mui/material";
+import { Paper, Box, Typography } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -93,15 +93,15 @@ function TodoList({
 
   return (
     <Stack spacing={2}>
-      <DndProvider backend={HTML5Backend}>
-        <InfiniteScroll
-          dataLength={todos.length}
-          next={() => handleNext(todos.length)}
-          hasMore={pagination.hasMore}
-          loader={<h4>Loading...</h4>}
-          height={350}
-        >
-          {todos.length > 0 && (
+      {todos.length > 0 ? (
+        <DndProvider backend={HTML5Backend}>
+          <InfiniteScroll
+            dataLength={todos.length}
+            next={() => handleNext(todos.length)}
+            hasMore={pagination.hasMore}
+            loader={<h4>Loading...</h4>}
+            height={500}
+          >
             <Paper className={classes.todosContainer}>
               <Box display="flex" flexDirection="column" alignItems="stretch">
                 {todos.map(({ id, text, completed, order }, index) =>
@@ -118,9 +118,15 @@ function TodoList({
                 )}
               </Box>
             </Paper>
-          )}
-        </InfiniteScroll>
-      </DndProvider>
+          </InfiniteScroll>
+        </DndProvider>
+      ) : (
+        <Box display="flex" flexDirection="column" alignItems="center">
+          <Typography variant="h6" component="h1" marginTop={10}>
+            No todo's found .
+          </Typography>
+        </Box>
+      )}
     </Stack>
   );
 }
