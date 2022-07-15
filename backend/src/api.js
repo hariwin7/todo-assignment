@@ -1,7 +1,9 @@
 const express = require("express");
 const { v4: generateId } = require("uuid");
 const database = require("./database");
-
+const dayjs = require("dayjs");
+var customParseFormat = require("dayjs/plugin/customParseFormat");
+dayjs.extend(customParseFormat);
 const app = express();
 
 const PAGE_SIZE = 20;
@@ -80,7 +82,10 @@ app.post("/", async (req, res) => {
       return;
     }
 
-    if (typeof dueDate !== "string") {
+    if (
+      typeof dueDate !== "string" &&
+      !dayjs(dueDate, "DD-MM-YYYY", true).isValid()
+    ) {
       res.status(400);
       res.json({ message: "invalid 'dueDate' expected date" });
       return;
